@@ -1,4 +1,5 @@
 import 'dotenv/config';
+import express from "express";
 import fs from 'fs-extra';
 import {
   ActionRowBuilder,
@@ -23,6 +24,15 @@ const guildId = process.env.GUILD_ID;
 if (!token || !clientId || !guildId) {
   throw new Error("❌ Missing DISCORD_TOKEN, CLIENT_ID, or GUILD_ID in environment");
 }
+
+const app = express();
+app.get("/", (req, res) => {
+  res.send("✅ Bot is alive!");
+});
+
+app.listen(3000, () => {
+  console.log("🌐 Keep-alive server running on port 3000");
+});
 
 // ========== command registration ==========
 const commands = [
