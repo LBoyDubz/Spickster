@@ -16,10 +16,12 @@ import {
 } from 'discord.js';
 
 const { DISCORD_TOKEN, CLIENT_ID, GUILD_ID } = process.env;
+const token = process.env.DISCORD_TOKEN;
+const clientId = process.env.CLIENT_ID;
+const guildId = process.env.GUILD_ID;
 
-if (!DISCORD_TOKEN || !CLIENT_ID || !GUILD_ID) {
-  console.error('❌ Missing DISCORD_TOKEN, CLIENT_ID, or GUILD_ID in .env');
-  process.exit(1);
+if (!token || !clientId || !guildId) {
+  throw new Error("❌ Missing DISCORD_TOKEN, CLIENT_ID, or GUILD_ID in environment");
 }
 
 // ========== command registration ==========
@@ -48,7 +50,9 @@ async function registerCommands() {
 }
 
 // ========== ticket counter ==========
-const DATA_PATH = 'data/tickets.json';
+const DATA_ROOT = process.env.DATA_DIR || 'data';
+const DATA_PATH = `${DATA_ROOT}/tickets.json`;
+await fs.ensureDir(DATA_ROOT);
 await fs.ensureFile(DATA_PATH);
 if (!(await fs.readFile(DATA_PATH, 'utf8')).trim()) {
   await fs.outputJson(DATA_PATH, { counter: 0 }, { spaces: 2 });
